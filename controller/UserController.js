@@ -2,6 +2,7 @@ import User from '../model/user.js';
 
 export const createUser = async (req, res) => {
     try {
+        console.log(req.body);
         const { name, email, password, user_type } = req.body;
 
         if (!name || !email || !password || !user_type) {
@@ -85,9 +86,10 @@ export const deleteUser = async (req, res) => {
         }
 
         await user.destroy();
-        return res.status(204).send();
+        return res.status(200).json({ message: 'User successfully deleted.' });
     } catch (error) {
         console.error('Error deleting user:', error);
         return res.status(500).json({ message: 'Internal server error.' });
     }
 };
+

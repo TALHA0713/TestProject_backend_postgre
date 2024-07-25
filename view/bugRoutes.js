@@ -10,10 +10,10 @@ import {
 
 const router = express.Router();
 
-router.post('/bugs', createBug);
-router.get('/bugs', getAllBugs);
-router.get('/bugs/:id', getBugById);
-router.put('/bugs/:id', updateBug);
-router.delete('/bugs/:id', deleteBug);
+router.post('/addBug', createBug);
+router.get('/getBugs', getAllBugs);
+router.get('/getSingleBug/:id', getBugById);
+router.put('/updateSingleBug/:id', updateBug);
+router.delete('/deleteBug/:id', deleteBug);
 
 export default router;

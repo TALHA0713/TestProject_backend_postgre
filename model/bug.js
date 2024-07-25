@@ -1,13 +1,13 @@
-// models/bug.js
 import { DataTypes } from 'sequelize';
-import {sequelize} from '../connection.js';
+import { sequelize } from '../connection.js';
 import Project from './project.js';
 import User from './user.js';
+import { v4 as uuidv4 } from 'uuid';
 
 const Bug = sequelize.define('Bug', {
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        type: DataTypes.UUID,
+        defaultValue: uuidv4,
         primaryKey: true
     },
     title: {
@@ -16,47 +16,43 @@ const Bug = sequelize.define('Bug', {
         unique: true
     },
     description: {
-        type: DataTypes.TEXT,
-        allowNull: true
+        type: DataTypes.TEXT
     },
     deadline: {
         type: DataTypes.DATE,
-        allowNull: true
+        allowNull : true
     },
     screenshot: {
         type: DataTypes.STRING, 
-        allowNull: true
+        validate: {
+            is: /\.(png|gif)$/i 
+        },
+        allowNull :true
     },
     type: {
         type: DataTypes.ENUM('feature', 'bug'),
         allowNull: false
     },
     status: {
-        type: DataTypes.ENUM(
-            'new', 'started', 'completed', // Feature statuses
-            'resolved' // Bug status
-        ),
+        type: DataTypes.ENUM('new', 'started', 'completed', 'resolved'),
         allowNull: false
     },
     project_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+        type: DataTypes.UUID,
         references: {
             model: Project,
             key: 'id'
         }
     },
     assigned_to: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
+        type: DataTypes.UUID,
         references: {
             model: User,
             key: 'id'
         }
     },
     created_by: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+        type: DataTypes.UUID,
         references: {
             model: User,
             key: 'id'
@@ -66,7 +62,5 @@ const Bug = sequelize.define('Bug', {
     timestamps: true,
     tableName: 'bugs'
 });
-
-
 
 export default Bug;

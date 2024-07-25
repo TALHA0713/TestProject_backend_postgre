@@ -1,14 +1,14 @@
-// models/user.js
 import { DataTypes } from 'sequelize';
-import {sequelize} from '../connection.js';
+import { sequelize } from '../connection.js';
+import { v4 as uuidv4 } from 'uuid'; 
 
 const User = sequelize.define('User', {
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        type: DataTypes.UUID, 
+        defaultValue: uuidv4, 
         primaryKey: true
     },
-    username: {
+    name: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -32,5 +32,6 @@ const User = sequelize.define('User', {
     timestamps: true,
     tableName: 'users'
 });
+
 
 export default User;

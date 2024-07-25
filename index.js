@@ -4,10 +4,10 @@ import {sequelize }from './connection.js';
 import bugRoutes from './view/bugRoutes.js'
 import projeectRoutes from './view/projectRoutes.js'
 import userRoutes from './view/userRoutes.js'
-
+import setupAssociations from './Relation/association.js';
 
 const app = express();
-const port = 3333;
+const port = 4444;
 
 app.use(express.json()); 
 
@@ -15,12 +15,12 @@ app.use('/api', bugRoutes);
 app.use('/api', projeectRoutes);
 app.use('/api', userRoutes);
 
-
+setupAssociations();
 
 const initializeDatabase = async () => {
     try {
-       
-        await sequelize.sync({ force: true }); 
+    
+        await sequelize.sync(); 
         console.log('Database synchronized successfully.');
 
         app.listen(port, () => {
