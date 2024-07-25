@@ -1,69 +1,93 @@
 import User from '../model/user.js';
 
-
-const addUser = async (req, res) => {
+export const createUser = async (req, res) => {
     try {
-        const user = await User.create(req.body);
-        res.status(201).json(user);
+        const { name, email, password, user_type } = req.body;
+
+        if (!name || !email || !password || !user_type) {
+            return res.status(400).json({ message: 'All fields are required.' });
+        }
+
+        const newUser = await User.create({
+            name,
+            email,
+            password,
+            user_type
+        });
+
+        return res.status(201).json(newUser);
     } catch (error) {
-        res.status(400).json({ error: 'Error creating user' });
+        console.error('Error creating user:', error);
+        return res.status(500).json({ message: 'Internal server error.' });
     }
 };
 
 
-const getAllUser = async (req, res) => {
+export const getAllUsers = async (req, res) => {
     try {
         const users = await User.findAll();
-        res.json(users);
+        return res.status(200).json(users);
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching users' });
+        console.error('Error fetching users:', error);
+        return res.status(500).json({ message: 'Internal server error.' });
     }
 };
 
-const getSingleUser = async (req, res) => {
+export const getUserById = async (req, res) => {
     try {
-        const user = await User.findByPk(req.params.id);
-        if (user) {
-            res.json(user);
-        } else {
-            res.status(404).json({ error: 'User not found' });
+        const { id } = req.params;
+        const user = await User.findByPk(id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
         }
+
+        return res.status(200).json(user);
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching user' });
+        console.error('Error fetching user:', error);
+        return res.status(500).json({ message: 'Internal server error.' });
     }
 };
 
-
-
-const updateUser = async (req, res) => {
+export const updateUser = async (req, res) => {
     try {
-        const [updated] = await User.update(req.body, {
-            where: { id: req.params.id }
+        const { id } = req.params;
+        const { name, email, password, user_type } = req.body;
+
+        const user = await User.findByPk(id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        await user.update({
+            name,
+            email,
+            password,
+            user_type
         });
-        if (updated) {
-            res.json({ message: 'User updated' });
-        } else {
-            res.status(404).json({ error: 'User not found' });
-        }
+
+        return res.status(200).json(user);
     } catch (error) {
-        res.status(400).json({ error: 'Error updating user' });
+        console.error('Error updating user:', error);
+        return res.status(500).json({ message: 'Internal server error.' });
     }
 };
 
-const deleteUser = async (req, res) => {
+
+export const deleteUser = async (req, res) => {
     try {
-        const deleted = await User.destroy({
-            where: { id: req.params.id }
-        });
-        if (deleted) {
-            res.json({ message: 'User deleted' });
-        } else {
-            res.status(404).json({ error: 'User not found' });
+        const { id } = req.params;
+        const user = await User.findByPk(id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
         }
+
+        await user.destroy();
+        return res.status(204).send();
     } catch (error) {
-        res.status(500).json({ error: 'Error deleting user' });
+        console.error('Error deleting user:', error);
+        return res.status(500).json({ message: 'Internal server error.' });
     }
-}; 
-
-
-export {addUser,deleteUser,updateUser,getAllUser,getSingleUser}
+};

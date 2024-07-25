@@ -1,5 +1,6 @@
+// models/user.js
 import { DataTypes } from 'sequelize';
-import { sequelize } from '../connection.js'; 
+import {sequelize} from '../connection.js';
 
 const User = sequelize.define('User', {
     id: {
@@ -9,11 +10,7 @@ const User = sequelize.define('User', {
     },
     username: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            notEmpty: true
-        }
+        allowNull: false
     },
     email: {
         type: DataTypes.STRING,
@@ -25,10 +22,11 @@ const User = sequelize.define('User', {
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
+        allowNull: false
+    },
+    user_type: {
+        type: DataTypes.ENUM('manager', 'qa', 'developer'),
+        allowNull: false
     }
 }, {
     timestamps: true,
