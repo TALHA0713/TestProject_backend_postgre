@@ -65,7 +65,7 @@ export async function getProjectsForUser(req, res) {
             const completedBugCount = await Bug.count({
                 where: {
                     project_id: project.id,
-                    status: 'completed'
+                    status: ['completed','resolved'] 
                 }
             });
 
