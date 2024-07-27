@@ -3,7 +3,7 @@ import User from '../model/user.js';
 export const createUser = async (req, res) => {
     try {
         console.log(req.body);
-        const { name, email, password, user_type } = req.body;
+        const { name, email, password, user_type ,phone} = req.body;
 
         if (!name || !email || !password || !user_type) {
             return res.status(400).json({ message: 'All fields are required.' });
@@ -13,7 +13,8 @@ export const createUser = async (req, res) => {
             name,
             email,
             password,
-            user_type
+            user_type,
+            phone,
         });
 
         return res.status(201).json(newUser);
@@ -53,7 +54,7 @@ export const getUserById = async (req, res) => {
 export const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email, password, user_type } = req.body;
+        const { name, email, password, user_type,phone } = req.body;
 
         const user = await User.findByPk(id);
 
@@ -65,7 +66,8 @@ export const updateUser = async (req, res) => {
             name,
             email,
             password,
-            user_type
+            user_type,
+            phone
         });
 
         return res.status(200).json(user);

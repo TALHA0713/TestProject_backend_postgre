@@ -2,7 +2,7 @@
 import express from 'express';
 import {
     createProject,
-    getAllProjects,
+    getProjectsForUser,
     getProjectById,
     updateProject,
     deleteProject
@@ -11,7 +11,7 @@ import {
 const router = express.Router();
 
 router.post('/addProject', createProject);
-router.get('/getProjects', getAllProjects);
+router.get('/getProjectsForUser/:id', getProjectsForUser);
 router.get('/getSingleProject/:id', getProjectById);
 router.put('/UpdateSingleProject/:id', updateProject);
 router.delete('/deleteSingleProject/:id', deleteProject);

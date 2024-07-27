@@ -15,7 +15,25 @@ const Project = sequelize.define('Project', {
         allowNull: false,
         unique: true
     },
+    detail: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        unique: true
+    },
+    ss: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue:'null'
+
+    },
     manager_id: {
+        type: DataTypes.UUID,
+        references: {
+            model: User,
+            key: 'id'
+        }
+    },
+    project_assignto: {
         type: DataTypes.UUID,
         references: {
             model: User,

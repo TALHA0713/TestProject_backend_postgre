@@ -84,27 +84,44 @@ export const getAllBugs = async (req, res) => {
 
 
 
-export const getBugById = async (req, res) => {
+export const getBugByProjectId = async (req, res) => {
     try {
         const { id } = req.params;
-        const bug = await Bug.findByPk(id, {
+
+    //    console.log(projectId)
+       
+        const bugs = await Bug.findAll({
+            where: { project_id: id },
             include: [
                 {
+                    model: Project,
+                    attributes: ['name'], 
+                },
+                {
                     model: User,
-                    as: 'assignedDeveloper', 
-                    attributes: ['id', 'name', 'email'] 
+                    as: 'assignedDeveloper',
+                    attributes: ['id', 'name'], 
                 },
             ]
         });
 
-        if (!bug) {
-            return res.status(404).json({ message: 'Bug not found.' });
+        if (!bugs.length) {
+            return res.status(404).json({ message: 'No bugs found for this project' });
         }
+        const completedBugsCount = bugs.filter(bug => bug.status === 'completed').length;
+        const totalBugsCount = bugs.length;
 
-        return res.status(200).json(bug);
+        
+        res.json({
+            totalBugsCount,
+            completedBugsCount,
+            bugs
+        });
+
+
     } catch (error) {
-        console.error('Error fetching bug:', error);
-        return res.status(500).json({ message: 'Internal server error.' });
+        console.error('Error fetching bugs:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
 
@@ -129,16 +146,12 @@ export const updateBug = async (req, res) => {
         }
 
         const developer = await User.findByPk(assigned_to);
-
         if (!developer) { 
             return res.status(404).json({ message: 'User not found.' });
         }
-
         if(developer.user_type!=="developer"){
             return res.status(400).json({ message: 'The specified user is not a developer.' });
         }
-
-
         await bug.update({
             title,
             description,
@@ -183,3 +196,31 @@ export const deleteBug = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error.' });
     }
 };
+
+
+export async function getBugsForDeveloper(req, res) {
+    const { id } = req.params;
+
+    try {
+        
+        const user = await User.findByPk(id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        if (user.user_type !== 'developer') {
+            return res.status(403).json({ error: 'Access denied: User is not a developer' });
+        }
+        
+        const bugs = await Bug.findAll({
+            where: {
+                assigned_to: id
+            }
+        });
+
+        return res.json(bugs);
+    } catch (error) {
+        console.error('Error fetching bugs:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
