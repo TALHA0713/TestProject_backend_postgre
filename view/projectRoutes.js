@@ -15,7 +15,7 @@ const router = express.Router();
 router.post('/addProject', createProject);
 router.get('/getProjectsForUser/:id', getProjectsForUser);
 router.get('/getSingleProject/:id', getProjectById);
-router.put('/UpdateSingleProject/:id', updateProject);
+router.put('/updateSingleProject/:id', updateProject);
 router.delete('/deleteSingleProject/:id', deleteProject);
 router.get('/getProject', getAllProjects);
 export default router;
