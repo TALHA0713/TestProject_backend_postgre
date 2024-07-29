@@ -18,4 +18,5 @@ router.put('/updateSingleBug/:id', updateBug);
 router.delete('/deleteBug/:id', deleteBug);
 router.get('/getBugsForDeveloper/:id', getBugsForDeveloper);
 
+
 export default router;

@@ -24,9 +24,9 @@ const Bug = sequelize.define('Bug', {
     },
     screenshot: {
         type: DataTypes.STRING, 
-        validate: {
-            is: /\.(png|gif)$/i 
-        },
+        // validate: {
+        //     is: /\.(png|gif)$/i 
+        // },
         allowNull :true
     },
     type: {

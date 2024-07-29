@@ -12,6 +12,18 @@ export const createProject = async (req, res) => {
             return res.status(400).json({ message: 'Name and manager_id are required.' });
         }
 
+        const existingProject = await Project.findOne({
+            where: {
+                name,
+                detail
+            }
+        });
+        
+        if (existingProject) {
+            return res.status(400).json({ message: 'Project already exist' });
+        }
+
+
         const manager = await User.findByPk(manager_id);
         if (!manager) { 
             return res.status(404).json({ message: 'Manager not found.' });
@@ -152,3 +164,18 @@ export const deleteProject = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error.' });
     }
 };  
+
+
+export const getAllProjects = async (req, res) => {
+    try {
+        const projects = await Project.findAll();
+
+        if (!projects.length) {
+            return res.status(404).json({ error: 'No projects found.' });
+        }
+
+        res.status(200).json(projects);
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while retrieving projects.' });
+    }
+};
